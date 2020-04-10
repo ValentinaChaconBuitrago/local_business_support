@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, {useState,useEffect} from "react";
 import Piecito from "./layout/Footer.js";
 import Questions from "./components/Questions.js";
+import Login from "./components/Login.js";
 import FormCreateQuestion from "./components/FormCreateQuestion.js";
 
 const App = () => {
@@ -33,6 +34,15 @@ const App = () => {
 		},
 	]);
 
+	const [user, setUser] = useState(null);
+	//TODO: revisar como manejar el error en el fetch
+	useEffect(() => {
+		console.log("getUser");
+		fetch("/getUser")
+			.then((res) => res.json())
+			.then((user) => setUser(user));
+	},[]);
+
 	const onVote = (question, answer) => {
 		setQuestions((prevQuestions) => {
 			const newQuestions = [...prevQuestions];
@@ -47,10 +57,17 @@ const App = () => {
 		});
 	};
 
+	const onLogout = () =>{
+		fetch("/logout")
+		.then(() => setUser(null));
+	};
+
 	return (
 		<div>
 			<div className="container">
 				<h2>Questionator!</h2>
+				{!user ? <Login></Login> : <div>Welcome {user.username} <button onClick={onLogout}>Logout</button></div>}
+
 				{/* -- START ROW -- */}
 				<div className="row">
 					<div className="col-8">
