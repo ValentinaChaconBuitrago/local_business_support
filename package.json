@@ -19,6 +19,7 @@
     "morgan": "^1.9.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
+    "react-geolocated": "^3.0.1",
     "react-google-maps": "^9.4.5"
   },
   "devDependencies": {
