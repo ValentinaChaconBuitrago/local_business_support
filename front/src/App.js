@@ -2,29 +2,6 @@ import React, { useState, useEffect } from "react";
 import Questions from "./components/Questions.js";
 import Maps from "./components/Maps.js";
 
-function App() {
-  return (
-    <div className="App">
-      <div className="container">
-        <h1>Prueba 1</h1>
-        <div className="row">
-          <div className="col-8">
-            <Questions></Questions>
-          </div>
-          <div className="col-4">
-            <p>Bienvenido</p>
-          </div>
-        </div>
-        <Footer></Footer>
-      </div>
-    </div>
-  );
-}
-const Footer = () => (
-  <div className="container">
-    <footer>Juan Diego Arango</footer>
-  </div>
-);
 let places = [];
 function App() {
   const [error, setError] = useState(null);
