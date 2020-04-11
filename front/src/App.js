@@ -4,14 +4,14 @@ import Maps from "./components/Maps.js";
 import { geolocated } from "react-geolocated";
 
 let places = [];
-let latActual = 0;
-let lonActual = 0;
 
 function App() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
   const [user, setUser] = useState(null);
+  const [lat, setLat] = useState(null);
+  const [lon, setLon] = useState(null);
 
   const onLogout = () => {
     fetch("/logout").then(() => setUser(null));
@@ -22,9 +22,9 @@ function App() {
   useEffect(() => {
     const geo = navigator.geolocation.getCurrentPosition(function success(pos) {
       var crd = pos.coords;
-      latActual = crd.latitude;
-      lonActual = crd.longitude;
-      console.log(latActual, "LARTTTT");
+      setLat(crd.latitude);
+      setLon(crd.longitude);
+      console.log(lat, "LARTTTT");
     });
 
     fetch("./getRestaurants")
@@ -47,7 +47,7 @@ function App() {
     fetch("/getUser")
       .then((res) => res.json())
       .then((user) => setUser(user));
-  }, [latActual, lonActual]);
+  }, [lat, lon]);
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -60,7 +60,7 @@ function App() {
           <div class="container-fluid">
             <div class="navbar-header">
               <a class="navbar-brand" href="#">
-                WebSiteName
+                MicroShopping
               </a>
             </div>
             <ul class="nav navbar-nav">
@@ -114,7 +114,7 @@ function App() {
                     <div style={{ height: `100%`, width: `100%` }} />
                   }
                   mapElement={<div style={{ height: `80vh` }} />}
-                  mar={{ lat: latActual, lng: lonActual }}
+                  mar={{ lat: lat, lng: lon }}
                   tiendas={items}
                 ></Maps>
               </div>
