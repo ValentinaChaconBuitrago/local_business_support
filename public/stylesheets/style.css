@@ -2,7 +2,25 @@ body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+#rowDiv {
+  height: 100vh;
+}
+#imgGlobo {
+  text-align: center;
 
+  margin: 0 auto;
+  display: block;
+  height: auto;
+  width: auto;
+  max-width: 30px;
+  max-height: 30px;
+}
+#divGloboMapa {
+  display: flex;
+  align-items: center;
+
+  text-align: center;
+}
 a {
-  color: #00B7FF;
+  color: #00b7ff;
 }

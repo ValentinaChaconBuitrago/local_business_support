@@ -1,93 +1,107 @@
-import React, {useState,useEffect} from "react";
-import Piecito from "./layout/Footer.js";
+import React, { useState, useEffect } from "react";
 import Questions from "./components/Questions.js";
-import Login from "./components/Login.js";
-import FormCreateQuestion from "./components/FormCreateQuestion.js";
+import Maps from "./components/Maps.js";
 
-const App = () => {
-	const [questions, setQuestions] = useState([
-		{
-			question: "Dummy?",
-			answers: [
-				{
-					answer: "You are the dummy",
-					votes: 10,
-				},
-				{
-					answer: "I'm dummy",
-					votes: 2,
-				},
-			],
-		},
-		{
-			question: "All Dummy?",
-			answers: [
-				{
-					answer: "We are the dummy",
-					votes: 11,
-				},
-				{
-					answer: "We are not the dummy",
-					votes: 21,
-				},
-			],
-		},
-	]);
+function App() {
+  return (
+    <div className="App">
+      <div className="container">
+        <h1>Prueba 1</h1>
+        <div className="row">
+          <div className="col-8">
+            <Questions></Questions>
+          </div>
+          <div className="col-4">
+            <p>Bienvenido</p>
+          </div>
+        </div>
+        <Footer></Footer>
+      </div>
+    </div>
+  );
+}
+const Footer = () => (
+  <div className="container">
+    <footer>Juan Diego Arango</footer>
+  </div>
+);
+let places = [];
+function App() {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [items, setItems] = useState([]);
+  const [user, setUser] = useState(null);
 
-	const [user, setUser] = useState(null);
-	//TODO: revisar como manejar el error en el fetch
-	useEffect(() => {
-		console.log("getUser");
-		fetch("/getUser")
-			.then((res) => res.json())
-			.then((user) => setUser(user));
-	},[]);
+  const onLogout = () => {
+    fetch("/logout").then(() => setUser(null));
+  };
+  // Note: the empty deps array [] means
+  // this useEffect will run once
+  // similar to componentDidMount()
+  useEffect(() => {
+    fetch("./getRestaurants")
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setItems(result);
+          places = result;
+          setIsLoaded(true);
+        },
+        // Nota: es importante manejar errores aquí y no en
+        // un bloque catch() para que no interceptemos errores
+        // de errores reales en los componentes.
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
 
-	const onVote = (question, answer) => {
-		setQuestions((prevQuestions) => {
-			const newQuestions = [...prevQuestions];
+    fetch("/getUser")
+      .then((res) => res.json())
+      .then((user) => setUser(user));
+  }, []);
 
-			const qObj = newQuestions.find((q) => q.question === question);
-			const newAnswers = qObj.answers.map((a) =>
-				a.answer === answer ? { answer: a.answer, votes: a.votes + 1 } : a
-			);
-			qObj.answers = newAnswers;
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  } else if (!isLoaded) {
+    return <div>Loading...</div>;
+  } else {
+    return (
+      <div>
+        <div>
+          <div className="container">
+            <h1>Hola</h1>
+          </div>
+        </div>
+        <div className="row">
+          <div id="storesDiv" className="col-md-6">
+            <h1>stores</h1>
+            <ul>
+              {items.map((item) => (
+                <li key={item.name}>{item.name}</li>
+              ))}
+            </ul>
+          </div>
 
-			return newQuestions;
-		});
-	};
-
-	const onLogout = () =>{
-		fetch("/logout")
-		.then(() => setUser(null));
-	};
-
-	return (
-		<div>
-			<div className="container">
-				<h2>Questionator!</h2>
-				{!user ? <Login></Login> : <div>Welcome {user.username} <button onClick={onLogout}>Logout</button></div>}
-
-				{/* -- START ROW -- */}
-				<div className="row">
-					<div className="col-8">
-						Aqui van las preguntas
-						<Questions questions={questions} onVote={onVote}></Questions>
-					</div>
-					<div className="col-4">
-						Aqui se crea una pregunta
-						<FormCreateQuestion></FormCreateQuestion>
-					</div>
-				</div>
-
-				{/* -- END ROW -- */}
-			</div>
-
-			{/* -- START FOOTER -- */}
-			<Piecito></Piecito>
-			{/* -- END FOOTER -- */}
-		</div>
-	);
-};
+          <div className="col-md-6">
+            <div id="rowDiv">
+              <h1>Mapa</h1>
+              <Maps
+                googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIBfNAk_YO6MsSe2mu2JAg-Voc6bDbItU&libraries=geometry,drawing,places"
+                loadingElement={<div style={{ height: `100%` }} />}
+                containerElement={
+                  <div style={{ height: `100%`, width: `100%` }} />
+                }
+                mapElement={<div style={{ height: `80vh` }} />}
+                mar={{ lat: 4.7106502, lng: -74.0493288 }}
+                tiendas={items}
+              ></Maps>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
 
 export default App;
