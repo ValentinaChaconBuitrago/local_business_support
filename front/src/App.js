@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import Questions from "./components/Questions.js";
 import Maps from "./components/Maps.js";
 import { geolocated } from "react-geolocated";
-
+const apikey = process.env.googlemaps_apikey;
+const googlemapsurl =
+  "https://maps.googleapis.com/maps/api/js?key=" +
+  apikey +
+  "&libraries=geometry,drawing,places";
 let places = [];
 
 function App() {
@@ -108,7 +112,7 @@ function App() {
                 <h1>Mapa</h1>
                 <Maps
                   isMarkerShown
-                  googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIBfNAk_YO6MsSe2mu2JAg-Voc6bDbItU&libraries=geometry,drawing,places"
+                  googleMapURL={googlemapsurl}
                   loadingElement={<div style={{ height: `100%` }} />}
                   containerElement={
                     <div style={{ height: `100%`, width: `100%` }} />
